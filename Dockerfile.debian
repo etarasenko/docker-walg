@@ -1,0 +1,30 @@
+FROM golang:1.22-bookworm AS build
+WORKDIR /app
+
+ARG GIT_VERSION=master
+
+ENV USE_BROTLI=1 \
+    USE_LIBSODIUM=1 \
+    USE_LZO=1
+
+RUN set -ex && \
+    apt update -q && \
+    apt install -qy --no-install-recommends \
+        build-essential cmake curl git libsodium-dev liblzo2-dev && \
+    git clone -b $GIT_VERSION --depth 1 https://github.com/wal-g/wal-g .
+
+RUN make deps
+RUN make pg_build mysql_build sqlserver_build redis_build mongo_build fdb_build gp_build
+
+# Default
+
+FROM debian:bookworm
+WORKDIR /usr/local/bin
+
+COPY --from=build /app/main/pg/wal-g pg-wal-g
+COPY --from=build /app/main/mysql/wal-g mysql-wal-g
+COPY --from=build /app/main/sqlserver/wal-g sqlserver-wal-g
+COPY --from=build /app/main/redis/wal-g redis-wal-g
+COPY --from=build /app/main/mongo/wal-g mongo-wal-g
+COPY --from=build /app/main/fdb/wal-g fdb-wal-g
+COPY --from=build /app/main/gp/wal-g gp-wal-g
