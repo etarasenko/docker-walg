@@ -20,10 +20,10 @@ RUN make pg_build mysql_build sqlserver_build redis_build mongo_build fdb_build 
 FROM alpine:3.21
 WORKDIR /usr/local/bin
 
-COPY --from=build /app/main/pg/wal-g pg-wal-g
-COPY --from=build /app/main/mysql/wal-g mysql-wal-g
-COPY --from=build /app/main/sqlserver/wal-g sqlserver-wal-g
-COPY --from=build /app/main/redis/wal-g redis-wal-g
-COPY --from=build /app/main/mongo/wal-g mongo-wal-g
-COPY --from=build /app/main/fdb/wal-g fdb-wal-g
-COPY --from=build /app/main/gp/wal-g gp-wal-g
+COPY --from=build /app/main/pg/wal-g wal-g-pg
+COPY --from=build /app/main/mysql/wal-g wal-g-mysql
+COPY --from=build /app/main/sqlserver/wal-g wal-g-sqlserver
+COPY --from=build /app/main/redis/wal-g wal-g-redis
+COPY --from=build /app/main/mongo/wal-g wal-g-mongo
+COPY --from=build /app/main/fdb/wal-g wal-g-fdb
+COPY --from=build /app/main/gp/wal-g wal-g-gp
